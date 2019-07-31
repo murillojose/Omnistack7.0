@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import api from '../services/api'
 import './New.css';
 
 class New extends Component {
@@ -7,13 +7,25 @@ class New extends Component {
         image: null,
         author: '',
         place: '',
-        hashtags: '',
+        description: '',
+        hashtag: '',
 
     };
 
-    handleSubmit = e => {
+    handleSubmit = async e => {
         e.preventDefault();
-        console.log(this.state);
+        
+        const data = new FormData();
+        data.append('image', this.state.image);
+        data.append('author', this.state.author);
+        data.append('place', this.state.place);
+        data.append('description', this.state.description);
+        data.append('hashtag', this.state.hashtag);
+        
+        await api.post('posts', data);
+
+        this.props.history.push('/');
+
     }
 
     handleImageChange = e => {
@@ -27,7 +39,7 @@ class New extends Component {
     render() {
         return (
             <form id="new-post" onSubmit={this.handleSubmit}>
-                <input type="file" />
+                <input type="file" onChange={this.handleImageChange}/>
                 <input
                     type="text"
                     name="author"
@@ -44,10 +56,17 @@ class New extends Component {
                 />
                 <input
                     type="text"
-                    name="hashtags"
-                    placeholder="Hashtags do post"
+                    name="description"
+                    placeholder="Descrição"
                     onChange={this.handleChange}
-                    value={this.state.hashtags}
+                    value={this.state.description}
+                />
+                <input
+                    type="text"
+                    name="hashtag"
+                    placeholder="Hashtag do post"
+                    onChange={this.handleChange}
+                    value={this.state.hashtag}
                 />
                 <button type="submit">Enviar</button>
 
